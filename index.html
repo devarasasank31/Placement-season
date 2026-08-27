@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Season</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- MAIN MENU -->
+    <div id="screen-menu" class="screen active">
+        <div class="menu-bg"></div>
+        <div class="menu-content">
+            <div class="menu-title-group">
+                <h1 class="menu-title">PLACEMENT<br><span class="title-accent">SEASON</span></h1>
+                <p class="menu-subtitle">30 days. One offer. Don't give up.</p>
+            </div>
+            <div class="menu-buttons">
+                <button id="btn-new-game" class="menu-btn btn-primary">START NEW GAME</button>
+                <button id="btn-continue" class="menu-btn btn-secondary" disabled>CONTINUE</button>
+                <button id="btn-how-to-play" class="menu-btn btn-tertiary">HOW TO PLAY</button>
+            </div>
+            <p class="menu-footer">Made for every fresher who kept applying.</p>
+        </div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="screen-howto" class="screen">
+        <div class="screen-inner">
+            <button class="back-btn" id="btn-back-howto">← Back</button>
+            <h2>How to Play</h2>
+            <div class="howto-content">
+                <div class="howto-section">
+                    <h3>🎯 Goal</h3>
+                    <p>You have 30 days to land a software engineering job offer. Manage your time, energy, skills, and money wisely.</p>
+                </div>
+                <div class="howto-section">
+                    <h3>📊 Resources</h3>
+                    <ul>
+                        <li><strong>Energy:</strong> Required for actions. Rest to recover.</li>
+                        <li><strong>Skills:</strong> Technical ability. Higher = better interviews.</li>
+                        <li><strong>Confidence:</strong> Affects interview performance.</li>
+                        <li><strong>Money:</strong> Spent on courses, projects, and expenses.</li>
+                    </ul>
+                </div>
+                <div class="howto-section">
+                    <h3>⚡ Daily Actions</h3>
+                    <ul>
+                        <li>Apply for jobs, practice DSA, build projects</li>
+                        <li>Learn new technologies, network on LinkedIn</li>
+                        <li>Prepare resume, attend interviews, rest</li>
+                    </ul>
+                </div>
+                <div class="howto-section">
+                    <h3>💼 Job Pipeline</h3>
+                    <p>Applied → OA → Interview → Final Round → Offer. Each stage requires passing performance checks.</p>
+                </div>
+                <div class="howto-section">
+                    <h3>⚠️ Burnout</h3>
+                    <p>Rest regularly! Burnout decreases energy recovery and confidence.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARACTER CREATION -->
+    <div id="screen-character" class="screen">
+        <div class="screen-inner">
+            <h2>Create Your Character</h2>
+            <div class="char-form">
+                <div class="char-field">
+                    <label for="char-name">Your Name</label>
+                    <input type="text" id="char-name" placeholder="Enter your name" maxlength="20">
+                </div>
+                <div class="char-field">
+                    <label>Specialization</label>
+                    <div class="char-options" id="spec-options">
+                        <button class="char-opt selected" data-spec="java">☕ Java Backend</button>
+                        <button class="char-opt" data-spec="python">🐍 Python</button>
+                        <button class="char-opt" data-spec="fullstack">🌐 Full Stack</button>
+                        <button class="char-opt" data-spec="dataai">🤖 Data / AI</button>
+                        <button class="char-opt" data-spec="frontend">🎨 Frontend</button>
+                    </div>
+                </div>
+                <div class="char-field">
+                    <label>Personality</label>
+                    <div class="char-options" id="personality-options">
+                        <button class="char-opt selected" data-personality="grinder">
+                            <span class="opt-title">Grinder</span>
+                            <span class="opt-desc">+10 Skills, -10 Energy</span>
+                        </button>
+                        <button class="char-opt" data-personality="networker">
+                            <span class="opt-title">Networker</span>
+                            <span class="opt-desc">+10 Confidence, +₹500</span>
+                        </button>
+                        <button class="char-opt" data-personality="builder">
+                            <span class="opt-title">Builder</span>
+                            <span class="opt-desc">+10 Skills, -₹300</span>
+                        </button>
+                        <button class="char-opt" data-personality="balanced">
+                            <span class="opt-title">Balanced</span>
+                            <span class="opt-desc">No major bonus</span>
+                        </button>
+                    </div>
+                </div>
+                <button id="btn-start-game" class="menu-btn btn-primary">BEGIN PLACEMENT SEASON →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME -->
+    <div id="screen-game" class="screen">
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <span class="topbar-title">PLACEMENT SEASON</span>
+                <span class="topbar-day" id="topbar-day">DAY 1 / 30</span>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="btn-sound-toggle" title="Toggle Sound">🔊</button>
+                <button class="icon-btn" id="btn-save" title="Save Game">💾</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="game-nav" id="game-nav">
+            <button class="nav-btn active" data-screen="dashboard">📊 Dashboard</button>
+            <button class="nav-btn" data-screen="jobs">💼 Jobs</button>
+            <button class="nav-btn" data-screen="resume">📄 Resume</button>
+            <button class="nav-btn" data-screen="projects">🔧 Projects</button>
+            <button class="nav-btn" data-screen="calendar">📅 Calendar</button>
+            <button class="nav-btn" data-screen="stats">📈 Stats</button>
+        </nav>
+
+        <!-- GAME CONTENT AREA -->
+        <div class="game-content">
+            <!-- DASHBOARD -->
+            <div id="view-dashboard" class="game-view active">
+                <div class="dashboard-grid">
+                    <!-- Resources -->
+                    <div class="dash-card resources-card">
+                        <h3>Resources</h3>
+                        <div class="resource-row">
+                            <span class="res-icon">⚡</span>
+                            <div class="res-info">
+                                <div class="res-header">
+                                    <span>ENERGY</span>
+                                    <span id="res-energy-val">100/100</span>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill energy-fill" id="bar-energy"></div></div>
+                            </div>
+                        </div>
+                        <div class="resource-row">
+                            <span class="res-icon">🧠</span>
+                            <div class="res-info">
+                                <div class="res-header">
+                                    <span>SKILLS</span>
+                                    <span id="res-skills-val">50/100</span>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill skills-fill" id="bar-skills"></div></div>
+                            </div>
+                        </div>
+                        <div class="resource-row">
+                            <span class="res-icon">💪</span>
+                            <div class="res-info">
+                                <div class="res-header">
+                                    <span>CONFIDENCE</span>
+                                    <span id="res-confidence-val">50/100</span>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill confidence-fill" id="bar-confidence"></div></div>
+                            </div>
+                        </div>
+                        <div class="resource-row">
+                            <span class="res-icon">💰</span>
+                            <div class="res-info">
+                                <div class="res-header">
+                                    <span>MONEY</span>
+                                    <span id="res-money-val">₹2,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Plan -->
+                    <div class="dash-card actions-card">
+                        <h3>Today's Plan</h3>
+                        <div class="day-info">
+                            <span class="day-label" id="day-label">DAY 1</span>
+                            <span class="day-sub" id="day-sub">29 days left. Make them count.</span>
+                        </div>
+                        <div class="actions-grid" id="actions-grid">
+                            <!-- Actions injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Pipeline -->
+                    <div class="dash-card pipeline-card">
+                        <h3>Application Pipeline</h3>
+                        <div class="pipeline" id="pipeline">
+                            <div class="pipe-stage">
+                                <span class="pipe-count" id="pipe-applied">0</span>
+                                <span class="pipe-label">Applied</span>
+                            </div>
+                            <div class="pipe-arrow">→</div>
+                            <div class="pipe-stage">
+                                <span class="pipe-count" id="pipe-oa">0</span>
+                                <span class="pipe-label">OA</span>
+                            </div>
+                            <div class="pipe-arrow">→</div>
+                            <div class="pipe-stage">
+                                <span class="pipe-count" id="pipe-interview">0</span>
+                                <span class="pipe-label">Interview</span>
+                            </div>
+                            <div class="pipe-arrow">→</div>
+                            <div class="pipe-stage">
+                                <span class="pipe-count" id="pipe-final">0</span>
+                                <span class="pipe-label">Final</span>
+                            </div>
+                            <div class="pipe-arrow">→</div>
+                            <div class="pipe-stage pipe-offer">
+                                <span class="pipe-count" id="pipe-offer">0</span>
+                                <span class="pipe-label">Offers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Events Log -->
+                    <div class="dash-card events-card">
+                        <h3>Recent Events</h3>
+                        <div class="events-log" id="events-log">
+                            <p class="events-empty">No events yet. Start your day!</p>
+                        </div>
+                    </div>
+
+                    <!-- Next Day Button -->
+                    <div class="dash-card nextday-card">
+                        <button id="btn-next-day" class="menu-btn btn-primary btn-lg">END DAY →</button>
+                        <button id="btn-end-game" class="menu-btn btn-danger btn-sm">End Game Early</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JOBS VIEW -->
+            <div id="view-jobs" class="game-view">
+                <div class="view-header">
+                    <h2>Job Board</h2>
+                    <div class="job-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="open">Open</button>
+                        <button class="filter-btn" data-filter="applied">Applied</button>
+                        <button class="filter-btn" data-filter="interview">Interviews</button>
+                        <button class="filter-btn" data-filter="offers">Offers</button>
+                    </div>
+                </div>
+                <div class="jobs-list" id="jobs-list">
+                    <!-- Jobs injected by JS -->
+                </div>
+            </div>
+
+            <!-- RESUME VIEW -->
+            <div id="view-resume" class="game-view">
+                <div class="resume-layout">
+                    <div class="resume-preview" id="resume-preview">
+                        <div class="resume-header-section">
+                            <h2 id="resume-name">Player Name</h2>
+                            <p id="resume-spec">Specialization</p>
+                        </div>
+                        <div class="resume-section">
+                            <h4>Skills</h4>
+                            <div id="resume-skills-list">Loading...</div>
+                        </div>
+                        <div class="resume-section">
+                            <h4>Projects</h4>
+                            <div id="resume-projects-list">No projects yet.</div>
+                        </div>
+                        <div class="resume-section">
+                            <h4>Certifications</h4>
+                            <div id="resume-certs-list">None yet.</div>
+                        </div>
+                        <div class="resume-score-section">
+                            <div class="resume-score-item">
+                                <span>ATS Score</span>
+                                <span id="resume-ats">35</span>
+                            </div>
+                            <div class="resume-score-item">
+                                <span>Quality</span>
+                                <span id="resume-quality">Basic</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resume-actions">
+                        <h3>Resume Actions</h3>
+                        <button class="action-card-btn" id="btn-improve-resume">
+                            <span class="action-icon">📝</span>
+                            <span class="action-name">Improve Resume</span>
+                            <span class="action-cost">15 Energy</span>
+                        </button>
+                        <button class="action-card-btn" id="btn-add-cert">
+                            <span class="action-icon">🏅</span>
+                            <span class="action-name">Get Certification</span>
+                            <span class="action-cost">10 Energy, ₹200</span>
+                        </button>
+                        <div class="resume-score-display">
+                            <div class="score-circle" id="resume-total-score">35</div>
+                            <span>Resume Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECTS VIEW -->
+            <div id="view-projects" class="game-view">
+                <div class="view-header">
+                    <h2>Projects</h2>
+                    <p class="view-sub">Build projects to boost your resume and skills.</p>
+                </div>
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Projects injected by JS -->
+                </div>
+            </div>
+
+            <!-- CALENDAR VIEW -->
+            <div id="view-calendar" class="game-view">
+                <div class="view-header">
+                    <h2>Calendar</h2>
+                    <p class="view-sub">30 days to make it happen.</p>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Calendar injected by JS -->
+                </div>
+            </div>
+
+            <!-- STATS VIEW -->
+            <div id="view-stats" class="game-view">
+                <div class="view-header">
+                    <h2>Statistics</h2>
+                </div>
+                <div class="stats-grid" id="stats-grid">
+                    <!-- Stats injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERVIEW SCREEN -->
+    <div id="screen-interview" class="screen">
+        <div class="interview-container">
+            <div class="interview-header">
+                <div class="interview-info">
+                    <h2 id="interview-company">Company Name</h2>
+                    <p id="interview-role">Role</p>
+                    <p id="interview-round">Round 1</p>
+                </div>
+                <div class="interview-meta">
+                    <div class="meta-item">
+                        <span>DIFFICULTY</span>
+                        <span id="interview-difficulty">Medium</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>CONFIDENCE</span>
+                        <span id="interview-confidence">50</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>TIME</span>
+                        <span id="interview-timer">30s</span>
+                    </div>
+                </div>
+            </div>
+            <div class="interview-question-area" id="interview-question-area">
+                <!-- Question injected by JS -->
+            </div>
+            <div class="interview-actions" id="interview-actions">
+                <!-- Answer buttons injected by JS -->
+            </div>
+            <div class="interview-progress">
+                <span id="interview-qnum">Question 1/5</span>
+                <div class="interview-score-bar">
+                    <span>Score: </span><span id="interview-score">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ENDING SCREEN -->
+    <div id="screen-ending" class="screen">
+        <div class="ending-container">
+            <div class="ending-content" id="ending-content">
+                <!-- Ending content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY SUMMARY MODAL -->
+    <div id="modal-day-summary" class="modal">
+        <div class="modal-content day-summary">
+            <h2 id="summary-title">Day Complete</h2>
+            <div class="summary-body" id="summary-body">
+                <!-- Summary injected by JS -->
+            </div>
+            <button id="btn-close-summary" class="menu-btn btn-primary">NEXT DAY →</button>
+        </div>
+    </div>
+
+    <!-- EVENT MODAL -->
+    <div id="modal-event" class="modal">
+        <div class="modal-content event-modal">
+            <div class="event-header" id="event-header">
+                <span class="event-icon" id="event-icon">⚡</span>
+                <h3 id="event-title">Event</h3>
+            </div>
+            <p id="event-desc">Description</p>
+            <div class="event-choices" id="event-choices">
+                <!-- Choices injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- OFFER MODAL -->
+    <div id="modal-offer" class="modal">
+        <div class="modal-content offer-modal">
+            <div class="offer-celebration" id="offer-content">
+                <!-- Offer content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- FLOATING TEXT CONTAINER -->
+    <div id="floating-text-container"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/jobs.js"></script>
+    <script src="js/interviews.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
