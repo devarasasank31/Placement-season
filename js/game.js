@@ -45,8 +45,6 @@ const Game = {
     },
 
     endDay() {
-        const changes = [...this.dailyChanges];
-
         const eventTriggered = Events.triggerEvent();
         if (eventTriggered) {
             this.pendingEventDuringEndDay = true;
