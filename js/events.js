@@ -29,6 +29,10 @@ const Events = {
         const event = this.checkForEvent();
         if (!event) return false;
 
+        if (!event.choices || event.choices.length === 0) {
+            event.choices = [{ label: "OK", effects: {} }];
+        }
+
         this.pendingEvent = event;
         UI.showEvent(event, event.choices);
         return true;

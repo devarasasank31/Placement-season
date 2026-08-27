@@ -124,23 +124,51 @@ const Interviews = {
         this.stopTimer();
 
         const q = this.questions[this.currentQuestionIndex];
-        const correctIndex = q.correct;
-        const isCorrect = selectedIndex === correctIndex;
+        const isBehavioral = q.type === "behavioral";
+
+        let isCorrect = false;
+        let scoreGain = 0;
+
+        if (isBehavioral) {
+            const selectedOpt = q.options[selectedIndex];
+            scoreGain = selectedOpt ? selectedOpt.score : 0;
+            isCorrect = scoreGain >= 2;
+        } else {
+            const correctIndex = q.correct;
+            isCorrect = selectedIndex === correctIndex;
+            scoreGain = isCorrect ? (10 + Math.floor(GameState.player.confidence / 10)) : 0;
+        }
 
         const buttons = document.querySelectorAll(".answer-btn");
         buttons.forEach((btn, idx) => {
             btn.disabled = true;
-            if (idx === correctIndex) btn.classList.add("correct");
-            if (idx === selectedIndex && !isCorrect) btn.classList.add("wrong");
+            if (isBehavioral) {
+                if (q.options[idx].score >= 3) btn.classList.add("correct");
+                else if (q.options[idx].score <= 1) btn.classList.add("wrong");
+            } else {
+                if (idx === q.correct) btn.classList.add("correct");
+                if (idx === selectedIndex && !isCorrect) btn.classList.add("wrong");
+            }
         });
 
-        if (isCorrect) {
-            this.score += 10 + Math.floor(GameState.player.confidence / 10);
-            Audio.play("correct");
-            UI.showToast("+10 points!", "success");
+        if (isBehavioral) {
+            this.score += scoreGain * 3;
+            if (scoreGain >= 2) {
+                Audio.play("correct");
+                UI.showToast(`Good answer! +${scoreGain * 3} points`, "success");
+            } else {
+                Audio.play("wrong");
+                UI.showToast("Could be better...", "warning");
+            }
         } else {
-            Audio.play("wrong");
-            UI.showToast("Incorrect", "error");
+            if (isCorrect) {
+                this.score += scoreGain;
+                Audio.play("correct");
+                UI.showToast(`+${scoreGain} points!`, "success");
+            } else {
+                Audio.play("wrong");
+                UI.showToast("Incorrect", "error");
+            }
         }
 
         document.getElementById("interview-score").textContent = this.score;

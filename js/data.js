@@ -1003,7 +1003,11 @@ const GAME_DATA = {
             icon: "⭐",
             description: "Your dream company is conducting campus placements next week!",
             type: "positive",
-            dayRange: [5, 15]
+            dayRange: [5, 15],
+            choices: [
+                { label: "Prepare intensively", effects: { skills: 5, confidence: 8, energy: -15 } },
+                { label: "Apply normally", effects: { confidence: 3 } }
+            ]
         },
         {
             id: "hackathon",
@@ -1011,7 +1015,11 @@ const GAME_DATA = {
             icon: "🏆",
             description: "A 24-hour hackathon with job opportunities for winners!",
             type: "positive",
-            dayRange: [8, 20]
+            dayRange: [8, 20],
+            choices: [
+                { label: "Participate", effects: { skills: 10, confidence: 8, energy: -25 } },
+                { label: "Skip it", effects: {} }
+            ]
         },
         {
             id: "resume_workshop",
@@ -1019,7 +1027,11 @@ const GAME_DATA = {
             icon: "📝",
             description: "A free resume review workshop by industry professionals.",
             type: "positive",
-            dayRange: [3, 10]
+            dayRange: [3, 10],
+            choices: [
+                { label: "Attend", effects: { confidence: 6, energy: -5 } },
+                { label: "Skip", effects: {} }
+            ]
         },
         {
             id: "tech_talk",
@@ -1027,7 +1039,11 @@ const GAME_DATA = {
             icon: "🎤",
             description: "CTO of a major company is giving a talk. Great networking chance!",
             type: "positive",
-            dayRange: [5, 15]
+            dayRange: [5, 15],
+            choices: [
+                { label: "Attend and network", effects: { confidence: 8, hasReferral: true } },
+                { label: "Skip", effects: {} }
+            ]
         },
         {
             id: "final_week_push",
@@ -1035,7 +1051,11 @@ const GAME_DATA = {
             icon: "😱",
             description: "Only a few days left! Companies are making final hiring decisions.",
             type: "negative",
-            dayRange: [25, 30]
+            dayRange: [25, 30],
+            choices: [
+                { label: "Push hard", effects: { energy: -20, confidence: 5 } },
+                { label: "Stay calm", effects: { confidence: 3 } }
+            ]
         }
     ]
 };
