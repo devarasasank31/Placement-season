@@ -98,5 +98,10 @@ const Events = {
         UI.renderActions();
         UI.renderEventsLog();
         UI.renderJobs();
+
+        if (Game.pendingEventDuringEndDay) {
+            Game.pendingEventDuringEndDay = false;
+            Game.completeDay();
+        }
     }
 };

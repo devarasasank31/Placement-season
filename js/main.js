@@ -41,7 +41,7 @@ const Main = {
             UI.showScreen("screen-menu");
         });
 
-        document.querySelectorAll("#char-options .char-opt, #personality-options .char-opt").forEach(btn => {
+        document.querySelectorAll("#spec-options .char-opt, #personality-options .char-opt").forEach(btn => {
             btn.addEventListener("click", () => {
                 Audio.play("click");
                 const parent = btn.parentElement;

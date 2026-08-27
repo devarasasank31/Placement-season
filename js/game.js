@@ -1,9 +1,15 @@
 const Game = {
     dailyChanges: [],
+    pendingEventDuringEndDay: false,
 
     startNewDay() {
         this.dailyChanges = [];
         GameState.actionsToday = 0;
+
+        if (GameState.burnout >= 100) {
+            this.triggerEnding();
+            return;
+        }
 
         Jobs.expireOldJobs();
 
@@ -42,7 +48,16 @@ const Game = {
         const changes = [...this.dailyChanges];
 
         const eventTriggered = Events.triggerEvent();
-        if (eventTriggered) return;
+        if (eventTriggered) {
+            this.pendingEventDuringEndDay = true;
+            return;
+        }
+
+        this.completeDay();
+    },
+
+    completeDay() {
+        const changes = [...this.dailyChanges];
 
         this.processPendingInterviews();
 
