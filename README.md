@@ -337,11 +337,6 @@ GAME_DATA.events.push({
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
----
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
@@ -354,7 +349,7 @@ Made for every fresher who kept applying.
 ---
 
 <p align="center">
-  <a href="https://devarasasank31.github.io/Placement-season/">🎮 Play Now</a> •
+  
   <a href="https://github.com/devarasasank31/Placement-season">⭐ Star on GitHub</a> •
   <a href="https://github.com/devarasasank31/Placement-season/issues">🐛 Report Bug</a>
 </p>
