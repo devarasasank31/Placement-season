@@ -1,0 +1,107 @@
+name: Daily Health Check
+
+# Runs automatically every day at 06:00 UTC, plus on every push and PR,
+# to verify the game still parses, loads fast, and plays end-to-end.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: health-check
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Syntax-check every JavaScript file
+        run: |
+          fail=0
+          for f in js/*.js tests/*.js; do
+            if node --check "$f"; then echo "PASS  $f"; else echo "FAIL  $f"; fail=1; fi
+          done
+          exit $fail
+
+      - name: Project structure
+        run: |
+          fail=0
+          for f in index.html style.css README.md \
+                   js/main.js js/game.js js/state.js js/data.js js/jobs.js \
+                   js/interviews.js js/events.js js/actions.js js/audio.js js/ui.js \
+                   tests/check-html.js tests/check-data.js tests/check-save.js tests/check-gameplay.js; do
+            if [ -f "$f" ]; then echo "PASS  $f"; else echo "FAIL  missing $f"; fail=1; fi
+          done
+          exit $fail
+
+      - name: HTML structure and load-time optimizations
+        run: node tests/check-html.js
+
+      - name: Game data completeness and validity
+        run: node tests/check-data.js
+
+      - name: Save/load round-trip and error handling
+        run: node tests/check-save.js
+
+      - name: Full 30-day gameplay smoke test
+        run: node tests/check-gameplay.js
+
+      - name: Report load budget
+        run: |
+          total=$(cat index.html style.css js/*.js | wc -c)
+          kb=$((total / 1024))
+          echo "Total payload: ${kb} KB across $(ls index.html style.css js/*.js | wc -l) files"
+          if [ "$kb" -gt 300 ]; then
+            echo "FAIL  payload grew above 300 KB budget"
+            exit 1
+          fi
+          echo "PASS  payload within 300 KB budget"
+
+  live-site:
+    name: Live Site (GitHub Pages)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Wait for Pages deployment
+        run: sleep 45
+
+      - name: Fetch site
+        run: |
+          url="https://devarasasank31.github.io/Placement-season/"
+          code=$(curl -s -o /tmp/page.html -w "%{http_code}" -L --max-time 30 "$url")
+          echo "HTTP $code for $url"
+          if [ "$code" = "200" ]; then
+            echo "PASS  site returns 200"
+          else
+            echo "WARN  site returned $code (Pages may not be enabled yet)"
+          fi
+
+      - name: Verify served page is the game
+        run: |
+          if [ ! -s /tmp/page.html ]; then echo "WARN  empty response, skipping"; exit 0; fi
+          for token in "PLACEMENT SEASON" "screen-menu" "boot-loader" "js/main.js"; do
+            if grep -q "$token" /tmp/page.html; then echo "PASS  contains: $token"; else echo "WARN  missing: $token"; fi
+          done
+          # Block render: the page must not reference external CDNs
+          if grep -qE 'src="https?://|href="https?://[^"]*\.(js|css)' /tmp/page.html; then
+            echo "FAIL  external script/style dependency found"
+            exit 1
+          fi
+          echo "PASS  zero external script/style dependencies"

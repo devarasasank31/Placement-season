@@ -74,6 +74,11 @@ const Game = {
         GameState.day++;
 
         if (GameState.day > GameState.maxDays) {
+            // Set the flag synchronously so the summary's "Next Day" button
+            // can't advance to a non-existent day 31, then reveal the ending
+            // once the summary has had a moment to display.
+            GameState.gameOver = true;
+            GameState.save();
             setTimeout(() => this.triggerEnding(), 500);
             return;
         }
@@ -177,6 +182,11 @@ const Game = {
 
         GameState.gameOver = true;
         GameState.save();
+
+        // Close any open modal (the day summary) so it can't cover the ending.
+        UI.hideDaySummary();
+        UI.hideEvent();
+        UI.hideOffer();
 
         Audio.play(type === "offer" ? "offer" : "gameover");
         UI.renderEnding(ending);
