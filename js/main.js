@@ -1,9 +1,38 @@
 const Main = {
+    __booted: false,
+
     init() {
+        if (this.__booted) return;
+        this.__booted = true;
+
         Audio.init();
         this.bindMenuEvents();
         this.bindGameEvents();
         this.updateContinueButton();
+    },
+
+    /*
+     * Hides the boot loader and reports exactly how long the game took to
+     * become interactive. The number is shown in the menu footer so players
+     * can see real load performance.
+     */
+    finishBoot() {
+        const ms = window.__bootHide ? window.__bootHide() : 0;
+
+        const paint = () => {
+            const foot = document.querySelector(".menu-footer");
+            if (!foot) return;
+            const nav = Math.round(performance.getEntriesByType("navigation")[0]?.responseEnd || 0);
+            foot.innerHTML =
+                `Made for every fresher who kept applying.<br>` +
+                `<span style="color:var(--text-muted);font-size:.75rem;">` +
+                `⚡ Interactive in <b style="color:var(--accent-light)">${ms} ms</b>` +
+                ` · network ${nav} ms · ${performance.getEntriesByType("resource").length} files</span>`;
+        };
+
+        // Wait for full load so the reported numbers are complete.
+        if (document.readyState === "complete") paint();
+        else window.addEventListener("load", paint, { once: true });
     },
 
     updateContinueButton() {
@@ -140,6 +169,31 @@ const Main = {
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    Main.init();
-});
+/*
+ * Race-safe bootstrap.
+ * With `defer` scripts, DOM may already be parsed when this runs, so a bare
+ * DOMContentLoaded listener can fire too late (or never) and leave the page
+ * stuck on the loader. Check readyState first, then fall back to the event.
+ */
+function __boot() {
+    try {
+        Main.init();
+    } catch (e) {
+        // Never let a runtime error keep the player stuck on the loader.
+        console.error("Boot init failed:", e);
+    } finally {
+        Main.finishBoot();
+    }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", __boot);
+} else {
+    __boot();
+}
+
+// Safety net: never let the loader hang for more than 8s.
+setTimeout(() => {
+    if (!Main.__booted) __boot();
+    if (window.__bootHide && !window.__BOOT_DONE) window.__bootHide();
+}, 8000);

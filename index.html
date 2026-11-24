@@ -3,10 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="public, max-age=31536000">
+    <meta http-equiv="Expires" content="max-age=31536000">
     <title>Placement Season</title>
+
+    <!-- Preload critical assets so they download in parallel -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="js/data.js" as="script">
+    <link rel="preload" href="js/ui.js" as="script">
     <link rel="stylesheet" href="style.css">
+
+    <!-- Critical inline CSS: paints the loader BEFORE any external file loads -->
+    <style>
+        #boot-loader {
+            position: fixed; inset: 0; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #0a0a0f; color: #e8e8f0;
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            transition: opacity .4s ease;
+        }
+        #boot-loader.done { opacity: 0; pointer-events: none; }
+        .boot-logo {
+            font-size: 1.6rem; font-weight: 800; letter-spacing: 4px; margin-bottom: 6px;
+            background: linear-gradient(135deg,#e8e8f0,#a29bfe,#00cec9);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .boot-sub { color: #8888a0; font-size: .8rem; margin-bottom: 22px; letter-spacing: 1px; }
+        .boot-bar { width: 220px; height: 5px; background: rgba(255,255,255,.07); border-radius: 3px; overflow: hidden; }
+        .boot-fill {
+            height: 100%; width: 0%; border-radius: 3px;
+            background: linear-gradient(90deg,#6c5ce7,#00cec9);
+            transition: width .2s ease;
+        }
+        .boot-timer { margin-top: 14px; font-size: .78rem; color: #555570; font-variant-numeric: tabular-nums; }
+        .boot-timer b { color: #a29bfe; font-weight: 600; }
+    </style>
+
+    <!-- Inline boot script: starts the clock at first byte, before ANY external resource -->
+    <script>
+        (function () {
+            var t0 = performance.now();
+            window.__BOOT_START = t0;
+            function tick() {
+                var el = document.getElementById('boot-ms');
+                var fill = document.getElementById('boot-fill');
+                if (el) el.textContent = Math.round(performance.now() - t0);
+                if (fill) {
+                    var p = Math.min(95, (performance.now() - t0) / 8);
+                    fill.style.width = p + '%';
+                }
+                if (!window.__BOOT_DONE) requestAnimationFrame(tick);
+            }
+            window.__bootHide = function () {
+                if (window.__BOOT_DONE) return window.__BOOT_TOTAL || 0;
+                window.__BOOT_DONE = true;
+                var total = Math.round(performance.now() - t0);
+                window.__BOOT_TOTAL = total;
+                var fill = document.getElementById('boot-fill');
+                if (fill) fill.style.width = '100%';
+                var box = document.getElementById('boot-loader');
+                if (box) {
+                    setTimeout(function () {
+                        box.classList.add('done');
+                        setTimeout(function () { box.remove(); }, 450);
+                    }, 220);
+                }
+                return total;
+            };
+            // Start ticking immediately (guards handle not-yet-parsed DOM),
+            // so the timer counts from the very first paint.
+            requestAnimationFrame(tick);
+            document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(tick); });
+        })();
+    </script>
+
+    <!-- defer = download in parallel with HTML, execute in order after parse (non-blocking) -->
+    <script defer src="js/data.js"></script>
+    <script defer src="js/state.js"></script>
+    <script defer src="js/audio.js"></script>
+    <script defer src="js/ui.js"></script>
+    <script defer src="js/jobs.js"></script>
+    <script defer src="js/interviews.js"></script>
+    <script defer src="js/events.js"></script>
+    <script defer src="js/actions.js"></script>
+    <script defer src="js/game.js"></script>
+    <script defer src="js/main.js"></script>
 </head>
 <body>
+    <!-- BOOT LOADER: shows instantly, tracks real load time -->
+    <div id="boot-loader" aria-live="polite" aria-label="Loading game">
+        <div class="boot-logo">PLACEMENT SEASON</div>
+        <div class="boot-sub">30 DAYS. ONE OFFER. DON'T GIVE UP.</div>
+        <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
+        <div class="boot-timer">Loading… <b id="boot-ms">0</b> ms</div>
+    </div>
+
     <!-- MAIN MENU -->
     <div id="screen-menu" class="screen active" role="main" aria-label="Main Menu">
         <div class="menu-bg"></div>
@@ -430,15 +521,5 @@
     <!-- FLOATING TEXT CONTAINER -->
     <div id="floating-text-container"></div>
 
-    <script src="js/data.js"></script>
-    <script src="js/state.js"></script>
-    <script src="js/audio.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/jobs.js"></script>
-    <script src="js/interviews.js"></script>
-    <script src="js/events.js"></script>
-    <script src="js/actions.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/main.js"></script>
 </body>
 </html>
